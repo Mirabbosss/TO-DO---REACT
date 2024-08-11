@@ -1,4 +1,11 @@
 import { useState } from "react";
+import MainLayout from "@layouts/main-layout";
+import Section from "@layouts/section";
+import Container from "@layouts/container";
+import Form from "@form/form";
+import Input from "@form/input";
+import Modal from "@components/modals";
+import Button from "@ui/button"
 
 const App = () => {
 
@@ -31,11 +38,11 @@ const App = () => {
   const editTask = (id, val) => {
     setCurrentTitle(val);
     setShowModal(true);
-    localStorage.setItem('teaskId', id);
+    localStorage.setItem('taskId', id);
   }
 
   const saveTask = () => {
-    let id = localStorage.getItem('teaskId');
+    let id = localStorage.getItem('taskId');
 
     todo.forEach(task =>{
       if(task.id == id){
@@ -45,37 +52,22 @@ const App = () => {
     })
   }
 
-  const modalStyle = {
-    display: showModal ? "flex" : "none"
-  }
+
 
   return (
-    <main>
-      <section id="main">
+    <MainLayout>
+      <Section id="main">
 
-        <div style={modalStyle} className="modal-wrapper">
-          <div className="modal-content">
-          <i onClick={()=> setShowModal(false)} className="bi bi-x close"></i>
+        <Modal saveTask={saveTask} show={showModal} setShow={setShowModal} title={currentTitle} setTitle={setCurrentTitle}/>
 
-            <form action="#">
-              <input type="text" value={currentTitle} onChange={(e)=> setCurrentTitle(e.target.value)} placeholder="Enter new title"/>
-            </form>
-
-            <div className="flex btn-group">
-            <button onClick={saveTask} className="save">Save</button>
-            <button onClick={()=> setShowModal(false)} className="cancel">Cancel</button>
-            </div>
-          </div>
-        </div>
-
-        <div className="container mx-auto">
+        <Container className="container mx-auto">
 
           <div className="todo-card my-8 mx-auto w-[600px] p-3">
 
-            <form onSubmit={addTask} action="#" className="p-3 border flex justify-between gap-x-2">
-              <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Enter task title" className="grow p-2" />
-              <button type="submit" className="bg-indigo-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-indigo-600">Add task</button>
-            </form>
+            <Form submitFunc={addTask} className="p-3 border flex justify-between gap-x-2">
+              <Input val={title} setVal={setTitle} type="text" placeholder="Enter task title" className="grow p-2" />
+              <Button type="submit" className="bg-indigo-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-indigo-600" title={"Add task"}/>
+            </Form>
 
             <table className="bg-slate-300 w-full text-center">
               <thead className="bg-white text-indigo-700">
@@ -97,14 +89,14 @@ const App = () => {
                       <td>{item.title}</td>
                       <td>{item.created_at}</td>
                       <td>
-                        <button onClick={()=> editTask(item.id, item.title)} className="bg-blue-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-indigo-600">
+                        <Button fun={()=> editTask(item.id, item.title)} className="bg-blue-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-indigo-600">
                           <i className="bi bi-pencil-square"></i> Edit
-                        </button>
+                        </Button>
                       </td>
                       <td>
-                        <button onClick={()=>deleteTask(item.id)} className="bg-red-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-red-600">
+                        <Button fun={()=>deleteTask(item.id)} className="bg-red-500 px-3 text-white rounded-sm focus:ring-2 hover:bg-red-600">
                           <i className="bi bi-trash3-fill"></i> Delete
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     )
@@ -113,10 +105,10 @@ const App = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </Container>
 
-      </section>
-    </main>
+      </Section>
+    </MainLayout>
   );
 };
 
